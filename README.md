@@ -45,7 +45,10 @@ make test-all
 # One phase
 make test-phase PHASE=phase1-foundations
 
-# One exercise
+# One exercise (shorthand: phase.exercise)
+make check EX=1.1
+
+# One exercise (explicit)
 make check PHASE=phase1-foundations EX=01-hello-world
 
 # Check overall progress
