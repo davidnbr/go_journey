@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Journey — Novice to Production-Ready</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2128;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --blue: #58a6ff;
+      --green: #3fb950;
+      --purple: #bc8cff;
+      --orange: #ffa657;
+      --red: #f85149;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    nav .logo { font-weight: 700; color: var(--blue); font-size: 1rem; }
+    nav .nav-links { display: flex; gap: 1.25rem; list-style: none; margin-left: auto; }
+    nav .nav-links a { color: var(--muted); font-size: 0.875rem; }
+    nav .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 2.5rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: -0.02em;
+    }
+    .hero .subtitle {
+      margin-top: 0.75rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .badges {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .badges img { height: 20px; }
+    .hero-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1.75rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .btn-primary { background: var(--blue); color: #0d1117; }
+    .btn-primary:hover { background: #79c0ff; text-decoration: none; }
+    .btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
+    .btn-secondary:hover { background: var(--surface2); text-decoration: none; }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      padding: 1.5rem 1.5rem 3rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .stat { text-align: center; }
+    .stat .number { font-size: 2rem; font-weight: 800; color: var(--blue); }
+    .stat .label { color: var(--muted); font-size: 0.8rem; margin-top: 0.1rem; }
+
+    /* ── SECTION ── */
+    section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3.5rem;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      color: var(--text);
+    }
+    .section-title span {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .step .num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+    .step h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .step p { font-size: 0.82rem; color: var(--muted); }
+
+    /* ── PHASE CARDS ── */
+    .phases { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .phase-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      cursor: pointer;
+      user-select: none;
+    }
+    .phase-header:hover { background: #1e242c; }
+    .phase-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .phase-header h2 { font-size: 1rem; font-weight: 700; flex: 1; }
+    .phase-meta { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    .tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid;
+    }
+    .phase-chevron {
+      color: var(--muted);
+      font-size: 0.8rem;
+      transition: transform 0.2s;
+    }
+    .phase-card.open .phase-chevron { transform: rotate(180deg); }
+
+    .phase-body { display: none; padding: 1.25rem; }
+    .phase-card.open .phase-body { display: block; }
+
+    .phase-desc { color: var(--muted); font-size: 0.875rem; margin-bottom: 1.25rem; }
+
+    .exercise-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .exercise-table th {
+      text-align: left;
+      padding: 0.4rem 0.75rem;
+      color: var(--muted);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+    .exercise-table td {
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid #21262d;
+    }
+    .exercise-table tr:last-child td { border-bottom: none; }
+    .exercise-table td:first-child { color: var(--muted); width: 2.5rem; }
+    .exercise-table td:nth-child(2) { font-weight: 500; color: var(--blue); }
+    .exercise-table td:nth-child(3) { color: var(--muted); }
+
+    .projects-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 1.25rem 0 0.6rem;
+    }
+    .project-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .project-chip {
+      font-size: 0.78rem;
+      padding: 0.3rem 0.75rem;
+      background: #1f6feb1a;
+      border: 1px solid #1f6feb44;
+      border-radius: 6px;
+      color: var(--blue);
+    }
+
+    /* ── QUICK START ── */
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .code-block-header {
+      padding: 0.5rem 1rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .code-block pre {
+      padding: 1rem;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+    .code-block .prompt { color: var(--muted); }
+    .code-block .cmd { color: var(--green); }
+    .code-block .comment { color: var(--muted); font-style: italic; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    /* ── PHASE COLORS ── */
+    .p1 { background: var(--green); }
+    .p2 { background: var(--blue); }
+    .p3 { background: var(--purple); }
+    .p4 { background: var(--orange); }
+
+    .tag-p1 { color: var(--green); border-color: #3fb95044; background: #3fb95011; }
+    .tag-p2 { color: var(--blue);  border-color: #58a6ff44; background: #58a6ff11; }
+    .tag-p3 { color: var(--purple);border-color: #bc8cff44; background: #bc8cff11; }
+    .tag-p4 { color: var(--orange);border-color: #ffa65744; background: #ffa65711; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">Go Journey</span>
+  <ul class="nav-links">
+    <li><a href="#phases">Phases</a></li>
+    <li><a href="#quickstart">Quick Start</a></li>
+    <li><a href="https://github.com/davidnbr/go_journey">GitHub</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Go Journey</h1>
+  <p class="subtitle">A structured, test-driven Go course — novice to production-ready. Built on spaced repetition, active recall, and Bloom's Taxonomy scaffolding.</p>
+  <div class="badges">
+    <a href="https://codespaces.new/davidnbr/go_journey"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" /></a>
+    <a href="https://github.com/davidnbr/go_journey/actions/workflows/ci.yml"><img src="https://github.com/davidnbr/go_journey/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  </div>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="https://codespaces.new/davidnbr/go_journey">Open in Codespaces</a>
+    <a class="btn btn-secondary" href="https://github.com/davidnbr/go_journey">View on GitHub</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="number">4</div><div class="label">Phases</div></div>
+  <div class="stat"><div class="number">59</div><div class="label">Exercises</div></div>
+  <div class="stat"><div class="number">10</div><div class="label">Projects</div></div>
+  <div class="stat"><div class="number">75+</div><div class="label">Hours of content</div></div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <h2 class="section-title">How It Works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="num">01</div>
+      <h3>Read the exercise README</h3>
+      <p>Each exercise has objectives, concept explanations, and hints behind spoiler gates.</p>
+    </div>
+    <div class="step">
+      <div class="num">02</div>
+      <h3>Fill in the stub</h3>
+      <p>Every <code>exercise.go</code> has <code>TODO</code> markers. Your job is to make the tests pass.</p>
+    </div>
+    <div class="step">
+      <div class="num">03</div>
+      <h3>Run the tests</h3>
+      <p>Use <code>make check PHASE=… EX=…</code> to get instant feedback on each exercise.</p>
+    </div>
+    <div class="step">
+      <div class="num">04</div>
+      <h3>Review &amp; repeat</h3>
+      <p>Each phase ends with a spaced-repetition review exercise mixing everything covered so far.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PHASES -->
+<section id="phases">
+  <h2 class="section-title">Course Structure <span>click a phase to expand</span></h2>
+  <div class="phases">
+
+    <!-- PHASE 1 -->
+    <div class="phase-card" id="phase1">
+      <div class="phase-header" onclick="toggle('phase1')">
+        <span class="phase-dot p1"></span>
+        <h2>Phase 1 — Foundations</h2>
+        <div class="phase-meta">
+          <span class="tag tag-p1">Remember → Apply</span>
+          <span class="tag tag-p1">15–20 hrs</span>
+          <span class="tag tag-p1">16 exercises · 2 projects</span>
+        </div>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <p class="phase-desc">Build fluency with Go's core syntax: types, control flow, functions, closures, slices, maps, strings, and error handling.</p>
+        <table class="exercise-table">
+          <thead><tr><th>#</th><th>Exercise</th><th>Concept</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>hello-world</td><td>package main, fmt.Println, compilation</td></tr>
+            <tr><td>02</td><td>variables</td><td>:=, var, zero values, multiple assignment</td></tr>
+            <tr><td>03</td><td>types</td><td>Basic types, type conversion</td></tr>
+            <tr><td>04</td><td>constants</td><td>const, iota</td></tr>
+            <tr><td>05</td><td>functions-basics</td><td>Single + multiple return values</td></tr>
+            <tr><td>06</td><td>functions-advanced</td><td>Named returns, variadic, first-class functions</td></tr>
+            <tr><td>07</td><td>closures</td><td>Closure capture, counter pattern</td></tr>
+            <tr><td>08</td><td>control-if</td><td>if/else, if-with-init</td></tr>
+            <tr><td>09</td><td>control-switch</td><td>switch, fallthrough, type switch</td></tr>
+            <tr><td>10</td><td>loops</td><td>for, range, break/continue</td></tr>
+            <tr><td>11</td><td>arrays-slices</td><td>Fixed arrays vs slices, len/cap</td></tr>
+            <tr><td>12</td><td>slices-advanced</td><td>append, copy, slicing internals</td></tr>
+            <tr><td>13</td><td>maps</td><td>CRUD, comma-ok idiom, iteration</td></tr>
+            <tr><td>14</td><td>strings-runes</td><td>Immutability, UTF-8, rune iteration</td></tr>
+            <tr><td>15</td><td>errors-basics</td><td>error interface, errors.New, error returns</td></tr>
+            <tr><td>16</td><td>review-1</td><td>Spaced repetition: mix of 01–15</td></tr>
+          </tbody>
+        </table>
+        <p class="projects-title">Projects</p>
+        <div class="project-chips">
+          <span class="project-chip">CLI Calculator</span>
+          <span class="project-chip">Word Frequency Counter</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase-card" id="phase2">
+      <div class="phase-header" onclick="toggle('phase2')">
+        <span class="phase-dot p2"></span>
+        <h2>Phase 2 — Core Patterns</h2>
+        <div class="phase-meta">
+          <span class="tag tag-p2">Apply → Analyze</span>
+          <span class="tag tag-p2">20–25 hrs</span>
+          <span class="tag tag-p2">18 exercises · 3 projects</span>
+        </div>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <p class="phase-desc">Build Go's object model: structs, methods, interfaces, pointers, error wrapping, defer/panic/recover, packages, and I/O interfaces.</p>
+        <table class="exercise-table">
+          <thead><tr><th>#</th><th>Exercise</th><th>Concept</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>structs-basics</td><td>Struct definition, field access, initialization</td></tr>
+            <tr><td>02</td><td>structs-methods</td><td>Value vs pointer receivers</td></tr>
+            <tr><td>03</td><td>structs-embedding</td><td>Composition over inheritance</td></tr>
+            <tr><td>04</td><td>interfaces-basics</td><td>Interface definition, implicit satisfaction</td></tr>
+            <tr><td>05</td><td>interfaces-polymorphism</td><td>Polymorphic dispatch</td></tr>
+            <tr><td>06</td><td>type-assertions</td><td>Type assertions, type switches</td></tr>
+            <tr><td>07</td><td>errors-custom</td><td>Custom error types, sentinel errors</td></tr>
+            <tr><td>08</td><td>errors-wrapping</td><td>%w, errors.Is, errors.As</td></tr>
+            <tr><td>09</td><td>pointers-basics</td><td>&amp;, *, nil pointers</td></tr>
+            <tr><td>10</td><td>pointers-vs-values</td><td>When to use pointer vs value receivers</td></tr>
+            <tr><td>11</td><td>defer-panic-recover</td><td>Defer ordering, panic/recover pattern</td></tr>
+            <tr><td>12</td><td>packages-design</td><td>Visibility, init(), package naming</td></tr>
+            <tr><td>13</td><td>modules-management</td><td>go.mod, versioning, go get</td></tr>
+            <tr><td>14</td><td>io-interfaces</td><td>io.Reader, io.Writer, composing I/O</td></tr>
+            <tr><td>15</td><td>goroutines-preview</td><td>Conceptual goroutine intro</td></tr>
+            <tr><td>16</td><td>review-2a</td><td>Mix of exercises 01–08</td></tr>
+            <tr><td>17</td><td>review-2b</td><td>Mix of exercises 09–15</td></tr>
+            <tr><td>18</td><td>review-2-hard</td><td>Interleaved, application level</td></tr>
+          </tbody>
+        </table>
+        <p class="projects-title">Projects</p>
+        <div class="project-chips">
+          <span class="project-chip">Todo CLI</span>
+          <span class="project-chip">Simple HTTP Server</span>
+          <span class="project-chip">Mini Bank System</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase-card" id="phase3">
+      <div class="phase-header" onclick="toggle('phase3')">
+        <span class="phase-dot p3"></span>
+        <h2>Phase 3 — Concurrency &amp; Advanced</h2>
+        <div class="phase-meta">
+          <span class="tag tag-p3">Analyze → Evaluate</span>
+          <span class="tag tag-p3">20–25 hrs</span>
+          <span class="tag tag-p3">15 exercises · 3 projects</span>
+        </div>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <p class="phase-desc">Master Go's concurrency primitives: goroutines, channels, select, worker pools, pipelines, context cancellation, sync primitives, and generics.</p>
+        <table class="exercise-table">
+          <thead><tr><th>#</th><th>Exercise</th><th>Concept</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>goroutines-lifecycle</td><td>Creation, goroutine leaks, WaitGroup</td></tr>
+            <tr><td>02</td><td>channels-unbuffered</td><td>Send/receive synchronization</td></tr>
+            <tr><td>03</td><td>channels-buffered</td><td>Buffer semantics, deadlock avoidance</td></tr>
+            <tr><td>04</td><td>select-statement</td><td>Multiplexing channels, default case</td></tr>
+            <tr><td>05</td><td>worker-pool</td><td>Fixed goroutine pool pattern</td></tr>
+            <tr><td>06</td><td>fan-out-fan-in</td><td>Distributing and merging work</td></tr>
+            <tr><td>07</td><td>pipeline</td><td>Staged data transformation</td></tr>
+            <tr><td>08</td><td>context-cancellation</td><td>context.WithCancel, WithTimeout</td></tr>
+            <tr><td>09</td><td>sync-mutex</td><td>sync.Mutex, RWMutex</td></tr>
+            <tr><td>10</td><td>sync-atomic</td><td>sync/atomic operations</td></tr>
+            <tr><td>11</td><td>sync-waitgroup</td><td>sync.WaitGroup patterns</td></tr>
+            <tr><td>12</td><td>race-conditions</td><td>-race flag, detecting data races</td></tr>
+            <tr><td>13</td><td>generics-basics</td><td>Type parameters, constraints (Go 1.18+)</td></tr>
+            <tr><td>14</td><td>reflection-basics</td><td>reflect package, use cases</td></tr>
+            <tr><td>15</td><td>review-3</td><td>Concurrency patterns interleaved</td></tr>
+          </tbody>
+        </table>
+        <p class="projects-title">Projects</p>
+        <div class="project-chips">
+          <span class="project-chip">URL Health Checker</span>
+          <span class="project-chip">Log Processor</span>
+          <span class="project-chip">Task Queue</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase-card" id="phase4">
+      <div class="phase-header" onclick="toggle('phase4')">
+        <span class="phase-dot p4"></span>
+        <h2>Phase 4 — Mastery</h2>
+        <div class="phase-meta">
+          <span class="tag tag-p4">Evaluate → Create</span>
+          <span class="tag tag-p4">20–25 hrs</span>
+          <span class="tag tag-p4">10 exercises · 2 projects</span>
+        </div>
+        <span class="phase-chevron">▼</span>
+      </div>
+      <div class="phase-body">
+        <p class="phase-desc">Production-ready Go: testing strategies, benchmarks, HTTP middleware, database patterns, build tooling, and performance profiling.</p>
+        <table class="exercise-table">
+          <thead><tr><th>#</th><th>Exercise</th><th>Concept</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>testing-unit</td><td>testing package, subtests, t.Run</td></tr>
+            <tr><td>02</td><td>testing-table-driven</td><td>Table-driven test patterns</td></tr>
+            <tr><td>03</td><td>testing-benchmarks</td><td>Benchmark*, pprof integration</td></tr>
+            <tr><td>04</td><td>testing-mocks</td><td>Interface-based mocking</td></tr>
+            <tr><td>05</td><td>http-middleware</td><td>Middleware chaining pattern</td></tr>
+            <tr><td>06</td><td>database-patterns</td><td>database/sql, prepared statements</td></tr>
+            <tr><td>07</td><td>build-tags</td><td>Build constraints, cross-compilation</td></tr>
+            <tr><td>08</td><td>unsafe-cgo</td><td>unsafe awareness, cgo basics</td></tr>
+            <tr><td>09</td><td>performance-profiling</td><td>Escape analysis, GC tuning, pprof</td></tr>
+            <tr><td>10</td><td>review-4-final</td><td>Full interleave — all phases</td></tr>
+          </tbody>
+        </table>
+        <p class="projects-title">Projects</p>
+        <div class="project-chips">
+          <span class="project-chip">REST API (CRUD + auth + Docker)</span>
+          <span class="project-chip">DevOps CLI Tool (Cobra + AWS)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- QUICK START -->
+<section id="quickstart">
+  <h2 class="section-title">Quick Start</h2>
+  <div class="code-block">
+    <div class="code-block-header">bash — requires Go 1.22+</div>
+    <pre>
+<span class="comment"># Clone and enter the repo</span>
+<span class="prompt">$ </span><span class="cmd">git clone https://github.com/davidnbr/go_journey.git && cd go_journey</span>
+
+<span class="comment"># Run a single exercise</span>
+<span class="prompt">$ </span><span class="cmd">make check PHASE=phase1-foundations EX=01-hello-world</span>
+
+<span class="comment"># Run all tests for a phase</span>
+<span class="prompt">$ </span><span class="cmd">make test-phase PHASE=phase1-foundations</span>
+
+<span class="comment"># Check overall progress</span>
+<span class="prompt">$ </span><span class="cmd">make progress</span></pre>
+  </div>
+</section>
+
+<footer>
+  <p>Built with Go · <a href="https://github.com/davidnbr/go_journey">github.com/davidnbr/go_journey</a></p>
+</footer>
+
+<script>
+  function toggle(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
