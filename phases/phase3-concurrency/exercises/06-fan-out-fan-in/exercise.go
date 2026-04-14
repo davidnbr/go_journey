@@ -22,6 +22,6 @@ func FanIn(inputs ...<-chan int) <-chan int {
 	var wg sync.WaitGroup
 	// stub: close immediately
 	close(out)
-	_ = wg
+	_ = &wg
 	return out
 }
