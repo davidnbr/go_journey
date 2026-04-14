@@ -7,7 +7,13 @@ test-race:
 	go test -race ./...
 
 test-phase:
-	go test ./phases/$(PHASE)/...
+	@if echo "$(PHASE)" | grep -qE '^[0-9]+$$'; then \
+		DIR=$$(ls -d phases/phase$(PHASE)-* 2>/dev/null | head -1); \
+		if [ -z "$$DIR" ]; then echo "Phase $(PHASE) not found"; exit 1; fi; \
+		go test ./$$DIR/...; \
+	else \
+		go test ./phases/$(PHASE)/...; \
+	fi
 
 check:
 	@if echo "$(EX)" | grep -q '\.'; then \

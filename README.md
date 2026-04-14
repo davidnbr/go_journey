@@ -42,7 +42,10 @@ Requires Go 1.22+.
 # All exercises
 make test-all
 
-# One phase
+# One phase (shorthand)
+make test-phase PHASE=1
+
+# One phase (explicit)
 make test-phase PHASE=phase1-foundations
 
 # One exercise (shorthand: phase.exercise)
